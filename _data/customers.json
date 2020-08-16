@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Akam Foad",
+    "phoneNo": "07504579861",
+    "password": "123456",
+    "address": "Hawler, Daratu"
+  },
+  {
+    "name": "Muhammad Azeez",
+    "phoneNo": "07705468231",
+    "password": "123456",
+    "address": "Sulaimani, Darasutawaka"
+  },
+  {
+    "name": "Hawraz Kirmanj",
+    "phoneNo": "07515191874",
+    "password": "123456",
+    "address": "Duhok, delal"
+  },
+  {
+    "name": "Kamaran Ramzi",
+    "phoneNo": "07727548464",
+    "password": "123456",
+    "address": "Kirkuk, Rahimawa"
+  }
+]

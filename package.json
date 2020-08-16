@@ -1,0 +1,21 @@
+{
+  "name": "eshukar",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon -q app.js",
+    "importData": "node seeder -i",
+    "deleteData": "node seeder -d"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.27",
+    "morgan": "~1.9.1",
+    "onesignal-node": "^3.1.5"
+  }
+}
