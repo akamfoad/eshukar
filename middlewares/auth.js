@@ -32,6 +32,12 @@ exports.protect = (model) => {
 
       req.user = await model.findById(decoded.id);
 
+      if (!req.user) {
+        return next(
+          new ErrorResponse("Not authorized to access this route", 401)
+        );
+      }
+
       next();
     } catch (err) {
       return next(
