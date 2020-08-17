@@ -3,6 +3,7 @@ const {
   getWorkers,
   getWorker,
   updateWorker,
+  addWorkerToTeam,
   deleteWorker,
   createWorker,
 } = require("../controllers/workers");
@@ -13,11 +14,13 @@ const { protect, authorize } = require("../middlewares/auth");
 router
   .route("/")
   .get(protect(Admin), authorize("admin", "editor"), getWorkers)
-  .post(createWorker);
+  .put(protect(Worker), updateWorker)
+  .post(createWorker)
+  .delete(protect(Worker), deleteWorker);
+
 router
   .route("/:id")
   .get(protect(Admin), authorize("admin", "editor"), getWorker)
-  .put(protect(Worker), updateWorker)
-  .delete(protect(Worker), deleteWorker);
+  .put(protect(Admin), addWorkerToTeam);
 
 module.exports = router;

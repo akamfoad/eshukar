@@ -18,11 +18,11 @@ router.use("/:customerId/requests", requestRouter);
 router
   .route("/")
   .get(protect(Admin), authorize("admin", "editor"), getCustomers)
+  .put(protect(Customer), updateCustomer)
   .post(createCustomer);
 router
   .route("/:id")
   .get(protect(Admin), authorize("admin", "editor"), getCustomer)
-  .put(protect(Customer), updateCustomer)
   .delete(protect(Admin), authorize("admin"), deleteCustomer);
 
 module.exports = router;

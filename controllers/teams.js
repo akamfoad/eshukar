@@ -27,20 +27,29 @@ exports.getTeam = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      update a team by id
-// @route     PUT /api/v1/teams/:id
+// @route     PUT /api/v1/teams/
 // @access    Private
 exports.updateTeam = asyncHandler(async (req, res, next) => {
-  let team = await Team.findById(req.params.id);
+  let team = await Team.findById(req.user.teamId);
 
   if (!team) {
-    return next(new ErrorResponse(`No Team with id ${req.params.id}`, 404));
+    return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
   }
 
+  const { name, serviceId } = req.body;
+
   // updating
-  team = await Team.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  team = await Team.findByIdAndUpdate(
+    req.user.teamId,
+    {
+      name: name,
+      serviceId: serviceId,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(200).json({
     success: true,
@@ -53,8 +62,13 @@ exports.updateTeam = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createTeam = asyncHandler(async (req, res, next) => {
   // create
+  const { name, serviceId } = req.body;
   try {
-    let team = new Team(req.body);
+    let team = new Team({
+      name,
+      serviceId,
+      leaderId: req.user._id,
+    });
     await team.validate();
     team = await team.save();
     await Worker.findByIdAndUpdate(team.leaderId, {
@@ -71,13 +85,13 @@ exports.createTeam = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      delete a team by id
-// @route     DELETE /api/v1/teams/:id
+// @route     DELETE /api/v1/teams/
 // @access    Private
 exports.deleteTeam = asyncHandler(async (req, res, next) => {
-  let team = await Team.findById(req.params.id);
+  let team = await Team.findById(req.user.teamId);
 
   if (!team) {
-    return next(new ErrorResponse(`No Team with id ${req.params.id}`, 404));
+    return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
   }
 
   // delete

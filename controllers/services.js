@@ -45,6 +45,10 @@ exports.updateService = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`No Service with id ${req.params.id}`, 404));
   }
 
+  if (req.body.availability) {
+    delete req.body.availability;
+  }
+
   // updating
   service = await Service.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

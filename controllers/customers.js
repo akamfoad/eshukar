@@ -31,23 +31,22 @@ exports.getCustomer = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      update a customer by id
-// @route     PUT /api/v1/customers/:id
+// @route     PUT /api/v1/customers/
 // @access    Private
 exports.updateCustomer = asyncHandler(async (req, res, next) => {
-  let customer = await Customer.findById(req.params.id);
+  let customer = await Customer.findById(req.user._id);
 
   if (!customer) {
-    return next(new ErrorResponse(`No Customer with id ${req.params.id}`, 404));
+    return next(new ErrorResponse(`No Customer with id ${req.user._id}`, 404));
   }
 
   // chopping off password
-  delete req.body.password;
   if (req.body.password) {
     delete req.body.password;
   }
 
   // updating
-  customer = await Customer.findByIdAndUpdate(req.params.id, req.body, {
+  customer = await Customer.findByIdAndUpdate(customer._id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -60,7 +59,7 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
 
 // @desc      create a customer by
 // @route     POST /api/v1/customers/
-// @access    Private
+// @access    Public
 exports.createCustomer = asyncHandler(async (req, res, next) => {
   // create
   try {
@@ -81,13 +80,13 @@ exports.createCustomer = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      delete a customer by id
-// @route     DELETE /api/v1/customers/:id
+// @route     DELETE /api/v1/customers/
 // @access    Private
 exports.deleteCustomer = asyncHandler(async (req, res, next) => {
-  let customer = await Customer.findById(req.params.id);
+  let customer = await Customer.findById(req.user._id);
 
   if (!customer) {
-    return next(new ErrorResponse(`No Customer with id ${req.params.id}`, 404));
+    return next(new ErrorResponse(`No Customer with id ${req.user._id}`, 404));
   }
 
   // delete

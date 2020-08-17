@@ -32,19 +32,43 @@ exports.getWorker = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      update a worker by id
-// @route     PUT /api/v1/teams/:teamId/workers/:id
-// @route     PUT /api/v1/workers/:id
+// @route     PUT /api/v1/workers/
 // @access    Private
 exports.updateWorker = asyncHandler(async (req, res, next) => {
-  // TODO we'll make sure the user is admin or editor
+  let worker = await Worker.findById(req.user._id);
 
+  if (!worker) {
+    return next(new ErrorResponse(`No Worker with id ${req.user._id}`, 404));
+  }
+
+  const { name, phoneNo } = req.body;
+
+  // updating with req.body
+  worker = await Worker.findByIdAndUpdate(
+    worker._id,
+    { name: name, phoneNo: phoneNo },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    data: worker,
+  });
+});
+
+// @desc      update a worker by id
+// @route     PUT /api/v1/teams/:teamId/workers/:id
+// @access    Private
+exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
   let worker = await Worker.findById(req.params.id);
 
   if (!worker) {
     return next(new ErrorResponse(`No Worker with id ${req.params.id}`, 404));
   }
 
-  // if teamId is exist then its assigning a worker to team
   if (req.params.teamId) {
     const team = await Team.findById(req.params.teamId);
     if (!team) {
@@ -56,17 +80,6 @@ exports.updateWorker = asyncHandler(async (req, res, next) => {
     worker.teamId = req.params.teamId;
     worker.role = "worker";
     worker = await worker.save();
-  } else {
-    // chopping off password
-    if (req.body.password) {
-      delete req.body.password;
-    }
-
-    // updating with req.body
-    worker = await Worker.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
   }
 
   res.status(200).json({
@@ -80,7 +93,8 @@ exports.updateWorker = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createWorker = asyncHandler(async (req, res, next) => {
   // create
-  const worker = await Worker.create(req.body);
+  const { name, phoneNo, password } = req.body;
+  const worker = await Worker.create({ name, phoneNo, password });
   res.status(200).json({
     success: true,
     data: worker,
@@ -88,13 +102,13 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      delete a worker by id
-// @route     DELETE /api/v1/workers/:id
+// @route     DELETE /api/v1/workers/
 // @access    Private
 exports.deleteWorker = asyncHandler(async (req, res, next) => {
-  let worker = await Worker.findById(req.params.id);
+  let worker = await Worker.findById(req.user._id);
 
   if (!worker) {
-    return next(new ErrorResponse(`No Worker with id ${req.params.id}`, 404));
+    return next(new ErrorResponse(`No Worker with id ${req.user._id}`, 404));
   }
 
   // delete
