@@ -40,8 +40,6 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`No Category with id ${req.params.id}`, 404));
   }
 
-  // we'll make sure the user is admin or editor
-
   // updating
   category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -58,8 +56,6 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/categories/
 // @access    Private
 exports.createCategory = asyncHandler(async (req, res, next) => {
-  // we'll make sure the user is admin or editor
-
   // create
   const category = await Category.create(req.body);
   res.status(200).json({
@@ -77,8 +73,6 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
   if (!category) {
     return next(new ErrorResponse(`No Category with id ${req.params.id}`, 404));
   }
-
-  // we'll make sure the user is admin or editor
 
   // delete
   await category.deleteOne();

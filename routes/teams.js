@@ -2,6 +2,7 @@ const router = require("express").Router();
 const advancedResults = require("../middlewares/advancedResults");
 const workerRouter = require("./workers");
 const Team = require("../models/Teams");
+const Worker = require("../models/Worker");
 const {
   getTeams,
   getTeam,
@@ -9,14 +10,25 @@ const {
   deleteTeam,
   createTeam,
 } = require("../controllers/teams");
+const Admin = require("../models/Adminstrators");
+const { protect, authorize } = require("../middlewares/auth");
 
 // re-route to worker router
 router.use("/:teamId/workers/", workerRouter);
 
 router
   .route("/")
-  .get(advancedResults(Team, "members"), getTeams)
-  .post(createTeam);
-router.route("/:id").get(getTeam).put(updateTeam).delete(deleteTeam);
+  .get(
+    protect(Admin),
+    authorize("admin", "editor"),
+    advancedResults(Team, "members"),
+    getTeams
+  )
+  .post(protect(Worker), createTeam);
+router
+  .route("/:id")
+  .get(protect(Admin), authorize("admin", "editor"), getTeam)
+  .put(protect(Worker), updateTeam)
+  .delete(protect(Worker), deleteTeam);
 
 module.exports = router;

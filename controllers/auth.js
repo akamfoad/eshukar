@@ -1,35 +1,48 @@
 const asyncHandler = require("../middlewares/async");
 const ErrorResponse = require("../utils/ErrorResponse");
-const Worker = require("../models/Worker");
 
 // @desc      Login as a USER (worker or customer)
-// @route     POST /api/v1/auth/login
+// @route     POST /api/v1/auth/customer/login
+// @route     POST /api/v1/auth/worker/login
+// @route     POST /api/v1/auth/admin/login
 // @access    Public
-exports.login = asyncHandler(async (req, res, next) => {
-  const { password, phoneNo } = req.body;
+exports.login = (model) => {
+  return asyncHandler(async (req, res, next) => {
+    const { email, password, phoneNo } = req.body;
 
-  if (!password || !phoneNo) {
-    return next(
-      new ErrorResponse("please provide password and phone number", 400)
-    );
-  }
+    let user;
 
-  const worker = await Worker.findOne({ phoneNo: phoneNo }).select("+password");
+    if (model.modelName === "Adminstrator") {
+      if (!password || !email) {
+        return next(
+          new ErrorResponse("please provide password and email", 400)
+        );
+      }
+      user = await model.findOne({ email: email }).select("+password");
+    } else {
+      if (!password || !phoneNo) {
+        return next(
+          new ErrorResponse("please provide password and phone number", 400)
+        );
+      }
+      user = await model.findOne({ phoneNo: phoneNo }).select("+password");
+    }
 
-  if (!worker) {
-    return next(new ErrorResponse("Invalid credentials", 401));
-  }
+    if (!user) {
+      return next(new ErrorResponse("Invalid credentials", 401));
+    }
 
-  const isMatch = await worker.matchPassword(password);
+    const isMatch = await user.matchPassword(password);
 
-  if (!isMatch) {
-    return next(new ErrorResponse("Invalid credentials", 401));
-  }
+    if (!isMatch) {
+      return next(new ErrorResponse("Invalid credentials", 401));
+    }
 
-  const token = worker.getSignedJwtToken();
+    const token = user.getSignedJwtToken();
 
-  res.status(200).json({
-    success: true,
-    token,
+    res.status(200).json({
+      success: true,
+      token,
+    });
   });
-});
+};

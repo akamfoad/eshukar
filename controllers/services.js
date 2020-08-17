@@ -45,8 +45,6 @@ exports.updateService = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`No Service with id ${req.params.id}`, 404));
   }
 
-  // we'll make sure the user is admin or editor
-
   // updating
   service = await Service.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -63,8 +61,6 @@ exports.updateService = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/services/
 // @access    Private
 exports.createService = asyncHandler(async (req, res, next) => {
-  // we'll make sure the user is admin or editor
-
   // create
   const service = await Service.create(req.body);
   res.status(200).json({
@@ -82,8 +78,6 @@ exports.deleteService = asyncHandler(async (req, res, next) => {
   if (!service) {
     return next(new ErrorResponse(`No Service with id ${req.params.id}`, 404));
   }
-
-  // we'll make sure the user is admin or editor
 
   // delete
   await service.deleteOne();

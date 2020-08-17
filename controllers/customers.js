@@ -46,8 +46,6 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
     delete req.body.password;
   }
 
-  // we'll make sure the user is admin or editor
-
   // updating
   customer = await Customer.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -64,8 +62,6 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/customers/
 // @access    Private
 exports.createCustomer = asyncHandler(async (req, res, next) => {
-  // we'll make sure the user is admin or editor
-
   // create
   try {
     let customer = new Customer(req.body);
@@ -93,8 +89,6 @@ exports.deleteCustomer = asyncHandler(async (req, res, next) => {
   if (!customer) {
     return next(new ErrorResponse(`No Customer with id ${req.params.id}`, 404));
   }
-
-  // we'll make sure the user is admin or editor
 
   // delete
   await customer.deleteOne();

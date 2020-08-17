@@ -36,8 +36,6 @@ exports.updateTeam = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`No Team with id ${req.params.id}`, 404));
   }
 
-  // we'll make sure the user is admin or editor
-
   // updating
   team = await Team.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -54,8 +52,6 @@ exports.updateTeam = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/teams/
 // @access    Private
 exports.createTeam = asyncHandler(async (req, res, next) => {
-  // we'll make sure the user is admin or editor
-
   // create
   try {
     let team = new Team(req.body);
@@ -83,8 +79,6 @@ exports.deleteTeam = asyncHandler(async (req, res, next) => {
   if (!team) {
     return next(new ErrorResponse(`No Team with id ${req.params.id}`, 404));
   }
-
-  // we'll make sure the user is admin or editor
 
   // delete
   await team.deleteOne();

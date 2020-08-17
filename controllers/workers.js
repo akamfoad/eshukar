@@ -79,8 +79,6 @@ exports.updateWorker = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/workers/
 // @access    Private
 exports.createWorker = asyncHandler(async (req, res, next) => {
-  // we'll make sure the user is admin or editor
-
   // create
   const worker = await Worker.create(req.body);
   res.status(200).json({
@@ -98,8 +96,6 @@ exports.deleteWorker = asyncHandler(async (req, res, next) => {
   if (!worker) {
     return next(new ErrorResponse(`No Worker with id ${req.params.id}`, 404));
   }
-
-  // we'll make sure the user is admin or editor
 
   // delete
   await worker.deleteOne();

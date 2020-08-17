@@ -13,6 +13,7 @@ const Team = require("./models/Teams");
 const Customer = require("./models/Customer");
 const Request = require("./models/Requests");
 const Rating = require("./models/Ratings");
+const Admin = require("./models/Adminstrators");
 
 // Connect to DB
 connect();
@@ -24,6 +25,7 @@ const workers = JSON.parse(fs.readFileSync("_data/workers.json"));
 const teams = JSON.parse(fs.readFileSync("_data/teams.json"));
 const customers = JSON.parse(fs.readFileSync("_data/customers.json"));
 const requests = JSON.parse(fs.readFileSync("_data/requests.json"));
+const admins = JSON.parse(fs.readFileSync("_data/admins.json"));
 
 const importData = async function () {
   try {
@@ -88,6 +90,9 @@ const importData = async function () {
     });
     await Request.create(requests);
 
+    console.log("importing admins...");
+    await Admin.create(admins);
+
     console.log("data importing finished");
     process.exit(0);
   } catch (error) {
@@ -117,6 +122,9 @@ const deleteData = async function () {
 
     await Rating.deleteMany();
     console.log("ratings Purged");
+
+    await Admin.deleteMany();
+    console.log("admins Purged");
 
     console.log("Data Purged finished");
     process.exit(0);
