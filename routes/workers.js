@@ -1,4 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
+const requestRouter = require("./requests");
 const {
   getWorkers,
   getWorker,
@@ -10,6 +11,9 @@ const {
 const Worker = require("../models/Worker");
 const Admin = require("../models/Adminstrators");
 const { protect, authorize } = require("../middlewares/auth");
+
+// re-route to request service
+router.use("/:workerId/requests", requestRouter);
 
 router
   .route("/")

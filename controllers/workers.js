@@ -35,6 +35,8 @@ exports.getWorker = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/workers/
 // @access    Private
 exports.updateWorker = asyncHandler(async (req, res, next) => {
+  // TODO if phone number included in body to update
+  // server should send sms to verify
   let worker = await Worker.findById(req.user._id);
 
   if (!worker) {

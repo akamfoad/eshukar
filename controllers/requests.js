@@ -10,11 +10,45 @@ const { createHash } = require("crypto");
 
 // @desc      Get all requests
 // @route     GET /api/v1/customers/:customerId/requests/
+// @route     GET /api/v1/workers/:workerId/requests/
 // @route     GET /api/v1/requests
 // @access    Private
 exports.getRequests = asyncHandler(async (req, res, next) => {
   if (req.params.customerId) {
-    const requests = await Request.find({ customerId: req.params.customerId });
+    const customer = await Customer.findById(req.params.customerId);
+    if (!customer) {
+      return next(
+        new ErrorResponse(`No customer with id=${req.params.customerId}`, 404)
+      );
+    }
+    const requests = await Request.find({ customerId: customer._id });
+    if (!requests) {
+      return next(
+        new ErrorResponse(`No requests found for customer ${customer._id}`, 404)
+      );
+    }
+    res.status(200).json({
+      success: true,
+      count: requests.length,
+      data: requests,
+    });
+  } else if (req.params.workerId) {
+    const worker = await Worker.findById(req.params.workerId);
+    if (!worker) {
+      return next(
+        new ErrorResponse(`No worker with id=${req.params.workerId}`, 404)
+      );
+    }
+    console.log(worker);
+    const requests = await Request.find({ teamId: worker.teamId });
+    if (!requests) {
+      return next(
+        new ErrorResponse(
+          `No requests found for the team of worker ${worker._id}`,
+          404
+        )
+      );
+    }
     res.status(200).json({
       success: true,
       count: requests.length,
