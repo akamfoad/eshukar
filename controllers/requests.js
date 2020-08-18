@@ -9,12 +9,12 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const { createHash } = require("crypto");
 
 // @desc      Get all requests
-// @route     GET /api/v1/customers/:customerId/requests/:id
+// @route     GET /api/v1/customers/:customerId/requests/
 // @route     GET /api/v1/requests
 // @access    Private
 exports.getRequests = asyncHandler(async (req, res, next) => {
   if (req.params.customerId) {
-    const requests = await Request.find({ customerId });
+    const requests = await Request.find({ customerId: req.params.customerId });
     res.status(200).json({
       success: true,
       count: requests.length,

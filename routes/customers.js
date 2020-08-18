@@ -19,10 +19,10 @@ router
   .route("/")
   .get(protect(Admin), authorize("admin", "editor"), getCustomers)
   .put(protect(Customer), updateCustomer)
+  .delete(protect(Customer), deleteCustomer)
   .post(createCustomer);
 router
   .route("/:id")
-  .get(protect(Admin), authorize("admin", "editor"), getCustomer)
-  .delete(protect(Admin), authorize("admin"), deleteCustomer);
+  .get(protect(Admin), authorize("admin", "editor"), getCustomer);
 
 module.exports = router;
