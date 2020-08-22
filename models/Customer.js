@@ -23,6 +23,7 @@ const Customer = new mongoose.Schema(
       type: String,
       required: [true, "address required"],
     },
+    loginDigits: String,
   },
   {
     toJSON: {
@@ -47,6 +48,18 @@ Customer.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
+};
+
+Customer.methods.getLoginDigits = async function () {
+  const randomDigits = Math.random().toString().slice(2, 8);
+  const salt = await bcrypt.genSalt(10);
+  this.loginDigits = await bcrypt.hash(randomDigits, salt);
+  await this.save();
+  return randomDigits;
+};
+
+Customer.methods.matchLoginDigits = async function (inputDigits) {
+  return await bcrypt.compare(inputDigits, this.loginDigits);
 };
 
 Customer.methods.matchPassword = async function (inputPassword) {
