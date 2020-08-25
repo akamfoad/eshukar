@@ -3,6 +3,11 @@ const path = require("path");
 const dotenv = require("dotenv");
 const { connect } = require("./config/db");
 
+// load env variables
+dotenv.config({
+  path: "./config/.env",
+});
+
 // importing routers
 const servicesRouter = require("./routes/services");
 const categoriesRouter = require("./routes/categories");
@@ -15,11 +20,6 @@ const authRouter = require("./routes/auth");
 // middlewares
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middlewares/error");
-
-// load env variables
-dotenv.config({
-  path: "./config/.env",
-});
 
 // connect to db
 connect();

@@ -13,6 +13,7 @@ const Customer = new mongoose.Schema(
     phoneNo: {
       type: String,
       required: [true, "Phone no required."],
+      unique: [true, "phone number is exist"],
     },
     password: {
       type: String,

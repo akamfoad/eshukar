@@ -1,6 +1,8 @@
 const asyncHandler = require("../middlewares/async");
 const ErrorResponse = require("../utils/ErrorResponse");
 const Customer = require("../models/Customer");
+const { TWILIO_SID, TWILIO_Auth_Token } = process.env;
+const twilio = require("twilio")(TWILIO_SID, TWILIO_Auth_Token);
 // @desc      Login as a USER (worker or customer)
 // @route     POST /api/v1/auth/customer/login
 // @route     POST /api/v1/auth/worker/login
@@ -49,8 +51,17 @@ exports.login = (model) => {
 
       try {
         // if there is a user to that phone number then generate
-        console.log(await user.getLoginDigits());
         // and send a 6 digit code to it's number with twilio
+
+        const digits = await user.getLoginDigits();
+        console.log("digits:" + digits);
+        const message = await twilio.messages.create({
+          body: `eshukar verification code: ${digits}`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: phoneNo,
+        });
+
+        console.log(message);
       } catch (err) {
         return next(err);
       }
@@ -117,7 +128,15 @@ exports.signUp = asyncHandler(async (req, res, next) => {
     await newCustomer.save({ validateBeforeSave: false });
 
     // TODO generate and send a 6 digit code to it's number with twilio
-    console.log(await newCustomer.getLoginDigits());
+    const digits = await newCustomer.getLoginDigits();
+    console.log("digits:" + digits);
+    const message = await twilio.messages.create({
+      body: `eshukar verification code: ${digits}`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phoneNo,
+    });
+
+    console.log(message);
 
     res.status(200).json({
       success: true,
