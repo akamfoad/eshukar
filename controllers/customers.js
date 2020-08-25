@@ -61,15 +61,21 @@ exports.updateCustomer = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/customers/
 // @access    Public
 exports.createCustomer = asyncHandler(async (req, res, next) => {
-  // create
+  const { name, address, lat, long, password } = req.body;
   try {
-    let customer = new Customer(req.body);
-    await customer.validate();
-    customer = await customer.save();
-    customer = customer.toJSON();
-    console.log(customer);
-    delete customer.password;
-    console.log(customer);
+    let customer = await Customer.findByIdAndUpdate(
+      req.user._id,
+      {
+        name,
+        address,
+        lat,
+        long,
+        password,
+      },
+      {
+        new: true,
+      }
+    );
     res.status(200).json({
       success: true,
       data: customer,

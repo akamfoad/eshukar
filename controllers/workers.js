@@ -94,7 +94,8 @@ exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/workers/
 // @access    Private
 exports.createWorker = asyncHandler(async (req, res, next) => {
-  // create
+  // TODO the route updated to be availaible to only admins
+  // SMS authentication also should be implemented to worker phone no
   const { name, phoneNo, password } = req.body;
   const worker = await Worker.create({ name, phoneNo, password });
   res.status(200).json({

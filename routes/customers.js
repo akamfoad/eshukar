@@ -20,7 +20,7 @@ router
   .get(protect(Admin), authorize("admin", "editor"), getCustomers)
   .put(protect(Customer), updateCustomer)
   .delete(protect(Customer), deleteCustomer)
-  .post(createCustomer);
+  .post(protect(Customer), createCustomer);
 router
   .route("/:id")
   .get(protect(Admin), authorize("admin", "editor"), getCustomer);

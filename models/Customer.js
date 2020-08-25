@@ -19,9 +19,14 @@ const Customer = new mongoose.Schema(
       required: [true, "password required"],
       select: false,
     },
-    address: {
-      type: String,
-      required: [true, "address required"],
+    address: String,
+    lat: {
+      type: Number,
+      required: [true, "lat is required"],
+    },
+    long: {
+      type: Number,
+      required: [true, "long is required"],
     },
     loginDigits: String,
   },
@@ -54,12 +59,14 @@ Customer.methods.getLoginDigits = async function () {
   const randomDigits = Math.random().toString().slice(2, 8);
   const salt = await bcrypt.genSalt(10);
   this.loginDigits = await bcrypt.hash(randomDigits, salt);
-  await this.save();
+  await this.save({ validateBeforeSave: false });
   return randomDigits;
 };
 
 Customer.methods.matchLoginDigits = async function (inputDigits) {
-  return await bcrypt.compare(inputDigits, this.loginDigits);
+  return this.loginDigits && inputDigits
+    ? await bcrypt.compare(inputDigits, this.loginDigits)
+    : null;
 };
 
 Customer.methods.matchPassword = async function (inputPassword) {

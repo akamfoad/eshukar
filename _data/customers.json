@@ -3,24 +3,32 @@
     "name": "Akam Foad",
     "phoneNo": "07504579861",
     "password": "123456",
-    "address": "Hawler, Daratu"
+    "address": "Hawler, Daratu",
+    "lat": 15,
+    "long": 10
   },
   {
     "name": "Muhammad Azeez",
     "phoneNo": "07705468231",
     "password": "123456",
-    "address": "Sulaimani, Darasutawaka"
+    "address": "Sulaimani, Darasutawaka",
+    "lat": 15,
+    "long": 10
   },
   {
     "name": "Hawraz Kirmanj",
     "phoneNo": "07515191874",
     "password": "123456",
-    "address": "Duhok, delal"
+    "address": "Duhok, delal",
+    "lat": 15,
+    "long": 10
   },
   {
     "name": "Kamaran Ramzi",
     "phoneNo": "07727548464",
     "password": "123456",
-    "address": "Kirkuk, Rahimawa"
+    "address": "Kirkuk, Rahimawa",
+    "lat": 15,
+    "long": 10
   }
 ]

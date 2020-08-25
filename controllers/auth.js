@@ -1,7 +1,6 @@
 const asyncHandler = require("../middlewares/async");
 const ErrorResponse = require("../utils/ErrorResponse");
-const jwt = require("jsonwebtoken");
-
+const Customer = require("../models/Customer");
 // @desc      Login as a USER (worker or customer)
 // @route     POST /api/v1/auth/customer/login
 // @route     POST /api/v1/auth/worker/login
@@ -48,9 +47,13 @@ exports.login = (model) => {
         return next(new ErrorResponse("Invalid credentials", 422));
       }
 
-      // if there is a user to that phone number then generate
-      console.log(await user.getLoginDigits());
-      // and send a 6 digit code to it's number with twilio
+      try {
+        // if there is a user to that phone number then generate
+        console.log(await user.getLoginDigits());
+        // and send a 6 digit code to it's number with twilio
+      } catch (err) {
+        return next(err);
+      }
 
       res.status(200).json({
         success: true,
@@ -60,8 +63,8 @@ exports.login = (model) => {
 };
 
 // @desc      Login as a USER (worker or customer)
-// @route     POST /api/v1/auth/customer/login
-// @route     POST /api/v1/auth/worker/login
+// @route     POST /api/v1/auth/customer/verifyLogin
+// @route     POST /api/v1/auth/worker/verifyLogin
 // @access    Public
 exports.verifyLogin = (model) => {
   return asyncHandler(async (req, res, next) => {
@@ -85,13 +88,41 @@ exports.verifyLogin = (model) => {
     // delete the loginDigits field
     user.loginDigits = undefined;
 
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     const token = user.getSignedJwtToken();
 
     res.status(200).json({
       success: true,
       token,
+      user,
     });
   });
 };
+
+// @desc      Login as a USER (worker or customer)
+// @route     POST /api/v1/auth/customer/signup
+// @access    Public
+exports.signUp = asyncHandler(async (req, res, next) => {
+  const { phoneNo } = req.body;
+  if (!phoneNo) {
+    return next(new ErrorResponse("please provide phone number", 400));
+  }
+
+  const newCustomer = new Customer({
+    phoneNo: phoneNo,
+  });
+
+  try {
+    await newCustomer.save({ validateBeforeSave: false });
+
+    // TODO generate and send a 6 digit code to it's number with twilio
+    console.log(await newCustomer.getLoginDigits());
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+});

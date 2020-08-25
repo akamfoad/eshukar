@@ -15,7 +15,8 @@ const { protect, authorize } = require("../middlewares/auth");
 
 // re-route to worker router
 router.use("/:teamId/workers/", workerRouter);
-
+// TODO creating, deleting and updating team should be
+// allowed just for admins or editors
 router
   .route("/")
   .get(

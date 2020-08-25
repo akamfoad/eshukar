@@ -19,7 +19,7 @@ router
   .route("/")
   .get(protect(Admin), authorize("admin", "editor"), getWorkers)
   .put(protect(Worker), updateWorker)
-  .post(createWorker)
+  .post(protect(Admin), authorize("admin", "editor"), createWorker)
   .delete(protect(Worker), deleteWorker);
 
 router

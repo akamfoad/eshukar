@@ -21,9 +21,14 @@ const Request = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
     },
-    address: {
-      type: String,
-      required: [true, "address is required"],
+    address: String,
+    lat: {
+      type: Number,
+      required: [true, "lat is required"],
+    },
+    long: {
+      type: Number,
+      required: [true, "long is required"],
     },
     phoneNoOfPlace: {
       type: String,

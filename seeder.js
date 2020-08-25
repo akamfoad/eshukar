@@ -81,8 +81,14 @@ const importData = async function () {
         req.teamId = savedTeams[i]._id;
         req.status = "TEAM_ASSIGNED";
       }
-      if (!req.address) {
+      if (!req.address && savedCustomers[i].address) {
         req.address = savedCustomers[i].address;
+      }
+      if (!req.lat) {
+        req.lat = savedCustomers[i].lat;
+      }
+      if (!req.long) {
+        req.long = savedCustomers[i].long;
       }
       if (!req.phoneNoOfPlace) {
         req.phoneNoOfPlace = savedCustomers[i].phoneNo;

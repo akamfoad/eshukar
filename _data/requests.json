@@ -8,7 +8,9 @@
     "phoneNoOfPlace": "07507748596"
   },
   {
-    "phoneNoOfPlace": "075484642"
+    "phoneNoOfPlace": "075484642",
+    "lat": 15,
+    "long": 10
   },
   {
     "address": "Bnaslawa, nawbazar"

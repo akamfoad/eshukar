@@ -303,7 +303,7 @@ exports.rating = (model) => {
 exports.createRequest = asyncHandler(async (req, res, next) => {
   // create
   try {
-    let { serviceId, address, phoneNoOfPlace } = req.body;
+    let { serviceId, address, lat, long, phoneNoOfPlace } = req.body;
 
     const customer = await Customer.findById(req.user._id);
     if (!customer) {
@@ -317,8 +317,12 @@ exports.createRequest = asyncHandler(async (req, res, next) => {
       return next(new ErrorResponse(`No service with id=${serviceId}`, 404));
     }
 
-    if (!address) {
-      address = customer.address;
+    if (!lat) {
+      lat = customer.lat;
+    }
+
+    if (!long) {
+      long = customer.long;
     }
 
     if (!phoneNoOfPlace) {
@@ -329,6 +333,8 @@ exports.createRequest = asyncHandler(async (req, res, next) => {
       customerId,
       serviceId,
       address,
+      lat,
+      long,
       phoneNoOfPlace,
     });
 

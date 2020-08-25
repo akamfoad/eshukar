@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+// TODO a Worker represents a leader in the team
+// other workers wont have their account
+// instead they'll be added to teams just as
+// name, address and phoneNo
+// TODO I'll update the schema and it's controllers accordingly
 const Worker = new mongoose.Schema(
   {
     name: {
@@ -62,12 +66,14 @@ Worker.methods.getLoginDigits = async function () {
   const randomDigits = Math.random().toString().slice(2, 8);
   const salt = await bcrypt.genSalt(10);
   this.loginDigits = await bcrypt.hash(randomDigits, salt);
-  await this.save();
+  await this.save({ validateBeforeSave: false });
   return randomDigits;
 };
 
 Worker.methods.matchLoginDigits = async function (inputDigits) {
-  return await bcrypt.compare(inputDigits, this.loginDigits);
+  return this.loginDigits && inputDigits
+    ? await bcrypt.compare(inputDigits, this.loginDigits)
+    : null;
 };
 
 Worker.methods.matchPassword = async function (inputPassword) {
