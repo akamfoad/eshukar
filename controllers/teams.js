@@ -27,34 +27,53 @@ exports.getTeam = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      update a team by id
-// @route     PUT /api/v1/teams/
+// @route     PUT /api/v1/teams/      -  for workers
+// @route     PUT /api/v1/teams/:id   -  for admins
 // @access    Private
 exports.updateTeam = asyncHandler(async (req, res, next) => {
-  let team = await Team.findById(req.user.teamId);
+  const teamId = req.params.id || req.user.teamId;
+  try {
+    let team = await Team.findById(teamId);
 
-  if (!team) {
-    return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
-  }
+    if (!team) {
+      return next(new ErrorResponse(`No Team with id ${teamId}`, 404));
+    }
 
-  const { name, serviceId } = req.body;
+    const { name, serviceId, leaderId } = req.body;
+    const updateDoc = {};
+    if (name) {
+      updateDoc.name = name;
+    }
+    if (serviceId) {
+      updateDoc.serviceId = serviceId;
+    }
+    if (leaderId && req.params.id) {
+      updateDoc.leaderId = leaderId;
 
-  // updating
-  team = await Team.findByIdAndUpdate(
-    req.user.teamId,
-    {
-      name: name,
-      serviceId: serviceId,
-    },
-    {
+      // updating leader
+      let leader = await Worker.findById(leaderId);
+      if (!leader) {
+        return next(new ErrorResponse(`No Worker with id ${leaderId}`, 404));
+      }
+
+      leader.teamId = teamId;
+
+      leader = await leader.save();
+    }
+
+    // updating team
+    team = await Team.findByIdAndUpdate(teamId, updateDoc, {
       new: true,
       runValidators: true,
-    }
-  );
+    }).populate("leaderId serviceId");
 
-  res.status(200).json({
-    success: true,
-    data: team,
-  });
+    res.status(200).json({
+      success: true,
+      data: team,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // @desc      create a team

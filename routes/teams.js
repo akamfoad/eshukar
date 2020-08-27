@@ -32,6 +32,7 @@ router
 router
   .route("/:id")
   .get(protect(Admin), authorize("admin", "editor"), getTeam)
-  .delete(protect(Admin), authorize("admin", "editor"), deleteTeam);
+  .delete(protect(Admin), authorize("admin", "editor"), deleteTeam)
+  .put(protect(Admin), authorize("admin", "editor"), updateTeam);
 
 module.exports = router;
