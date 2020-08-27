@@ -80,13 +80,15 @@ exports.createTeam = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      delete a team by id
-// @route     DELETE /api/v1/teams/
+// @route     DELETE /api/v1/teams/      -  for workers
+// @route     DELETE /api/v1/teams/:id   -  for admins
 // @access    Private
 exports.deleteTeam = asyncHandler(async (req, res, next) => {
-  let team = await Team.findById(req.user.teamId);
+  const teamId = req.user.teamId || req.params.id;
+  let team = await Team.findById(teamId);
 
   if (!team) {
-    return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
+    return next(new ErrorResponse(`No Team with id ${teamId}`, 404));
   }
 
   // delete

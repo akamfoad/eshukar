@@ -29,6 +29,9 @@ router
   .put(protect(Worker), updateTeam)
   .delete(protect(Worker), deleteTeam);
 
-router.route("/:id").get(protect(Admin), authorize("admin", "editor"), getTeam);
+router
+  .route("/:id")
+  .get(protect(Admin), authorize("admin", "editor"), getTeam)
+  .delete(protect(Admin), authorize("admin", "editor"), deleteTeam);
 
 module.exports = router;
