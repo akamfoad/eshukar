@@ -61,35 +61,6 @@ exports.updateWorker = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc      update a worker by id
-// @route     PUT /api/v1/teams/:teamId/workers/:id
-// @access    Private
-exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
-  let worker = await Worker.findById(req.params.id);
-
-  if (!worker) {
-    return next(new ErrorResponse(`No Worker with id ${req.params.id}`, 404));
-  }
-
-  if (req.params.teamId) {
-    const team = await Team.findById(req.params.teamId);
-    if (!team) {
-      return next(
-        new ErrorResponse(`No team found with id="${req.params.teamId}"`, 404)
-      );
-    }
-
-    worker.teamId = req.params.teamId;
-    worker.role = "worker";
-    worker = await worker.save();
-  }
-
-  res.status(200).json({
-    success: true,
-    data: worker,
-  });
-});
-
 // @desc      create a worker by
 // @route     POST /api/v1/workers/
 // @access    Private

@@ -2,21 +2,25 @@
   {
     "name": "Abdulla xawenkar",
     "phoneNo": "+9647507788898",
-    "password": "123456"
+    "password": "123456",
+    "members": []
   },
   {
     "name": "Hamay fitar",
     "phoneNo": "+9647507953975",
-    "password": "623458"
+    "password": "623458",
+    "members": []
   },
   {
     "name": "Samad Karabachi",
     "phoneNo": "+9647810520687",
-    "password": "d54c9dc"
+    "password": "d54c9dc",
+    "members": []
   },
   {
     "name": "Hamza boyaxchi",
-    "phoneNo": "+96477007054651",
-    "password": "6e598e54cv6d2"
+    "phoneNo": "+9647515191479",
+    "password": "6e598e54cv6d2",
+    "members": []
   }
 ]

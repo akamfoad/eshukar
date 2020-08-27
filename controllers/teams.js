@@ -98,6 +98,39 @@ exports.createTeam = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc      add worker to team by leader id
+// @route     PUT /api/v1/teams/addMemberToTeam
+// @access    Private
+exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
+  try {
+    let team = await Team.findById(req.user.teamId);
+
+    if (!team) {
+      return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
+    }
+
+    const { name, phoneNo, address, gender } = req.body;
+
+    team.members.push({
+      name,
+      phoneNo,
+      address,
+      gender,
+    });
+
+    await team.validate();
+
+    team = await team.save();
+
+    res.status(200).json({
+      success: true,
+      data: team,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @desc      delete a team by id
 // @route     DELETE /api/v1/teams/      -  for workers
 // @route     DELETE /api/v1/teams/:id   -  for admins
