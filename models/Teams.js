@@ -17,7 +17,6 @@ const Team = new mongoose.Schema(
     leaderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Worker",
-      required: true,
     },
   },
   {

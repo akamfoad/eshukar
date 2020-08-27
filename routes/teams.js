@@ -25,9 +25,9 @@ router
     advancedResults(Team, "members"),
     getTeams
   )
-  .post(protect(Worker), createTeam)
-  .put(protect(Worker), authorize("leader"), updateTeam)
-  .delete(protect(Worker), authorize("leader"), deleteTeam);
+  .post(protect(Admin), authorize("admin", "editor"), createTeam)
+  .put(protect(Worker), updateTeam)
+  .delete(protect(Worker), deleteTeam);
 
 router.route("/:id").get(protect(Admin), authorize("admin", "editor"), getTeam);
 

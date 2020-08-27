@@ -67,14 +67,9 @@ exports.createTeam = asyncHandler(async (req, res, next) => {
     let team = new Team({
       name,
       serviceId,
-      leaderId: req.user._id,
     });
     await team.validate();
     team = await team.save();
-    await Worker.findByIdAndUpdate(team.leaderId, {
-      teamId: team._id,
-      role: "leader",
-    });
     res.status(200).json({
       success: true,
       data: team,
