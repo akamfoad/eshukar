@@ -4,7 +4,6 @@ const {
   getWorkers,
   getWorker,
   updateWorker,
-  addWorkerToTeam,
   deleteWorker,
   createWorker,
 } = require("../controllers/workers");
@@ -24,7 +23,6 @@ router
 
 router
   .route("/:id")
-  .get(protect(Admin), authorize("admin", "editor"), getWorker)
-  .put(protect(Admin), addWorkerToTeam);
+  .get(protect(Admin), authorize("admin", "editor"), getWorker);
 
 module.exports = router;

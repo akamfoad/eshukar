@@ -19,17 +19,10 @@ const Worker = new mongoose.Schema(
       required: [true, "Phone no required."],
       unique: [true, "phone number is exist"],
     },
-    // TODO password should be hashed, I may use bcryptjs
     password: {
       type: String,
       required: [true, "password required"],
       select: false,
-    },
-    // TODO role should be set to none when the worker isn't part of a team (teamId is undefined)
-    role: {
-      type: String,
-      enum: ["leader", "worker", "none" /** and more maybe */],
-      default: "none",
     },
     teamId: {
       type: mongoose.Schema.Types.ObjectId,

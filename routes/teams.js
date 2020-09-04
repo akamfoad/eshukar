@@ -9,6 +9,8 @@ const {
   updateTeam,
   deleteTeam,
   createTeam,
+  addWorkerToTeam,
+  removeTeamMember,
 } = require("../controllers/teams");
 const Admin = require("../models/Adminstrators");
 const { protect, authorize } = require("../middlewares/auth");
@@ -25,10 +27,17 @@ router
     advancedResults(Team, "members"),
     getTeams
   )
-  .post(protect(Worker), createTeam)
-  .put(protect(Worker), authorize("leader"), updateTeam)
-  .delete(protect(Worker), authorize("leader"), deleteTeam);
+  .post(protect(Admin), authorize("admin", "editor"), createTeam)
+  .put(protect(Worker), updateTeam)
+  .delete(protect(Worker), deleteTeam);
 
-router.route("/:id").get(protect(Admin), authorize("admin", "editor"), getTeam);
+router.put("/addMemberToTeam", protect(Worker), addWorkerToTeam);
+router.put("/removeTeamMember", protect(Worker), removeTeamMember);
+
+router
+  .route("/:id")
+  .get(protect(Admin), authorize("admin", "editor"), getTeam)
+  .delete(protect(Admin), authorize("admin", "editor"), deleteTeam)
+  .put(protect(Admin), authorize("admin", "editor"), updateTeam);
 
 module.exports = router;
