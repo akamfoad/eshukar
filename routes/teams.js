@@ -10,6 +10,7 @@ const {
   deleteTeam,
   createTeam,
   addWorkerToTeam,
+  removeTeamMember,
 } = require("../controllers/teams");
 const Admin = require("../models/Adminstrators");
 const { protect, authorize } = require("../middlewares/auth");
@@ -31,6 +32,7 @@ router
   .delete(protect(Worker), deleteTeam);
 
 router.put("/addMemberToTeam", protect(Worker), addWorkerToTeam);
+router.put("/removeTeamMember", protect(Worker), removeTeamMember);
 
 router
   .route("/:id")

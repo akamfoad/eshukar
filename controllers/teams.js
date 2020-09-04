@@ -98,7 +98,7 @@ exports.createTeam = asyncHandler(async (req, res, next) => {
   }
 });
 
-// @desc      add worker to team by leader id
+// @desc      add worker to team
 // @route     PUT /api/v1/teams/addMemberToTeam
 // @access    Private
 exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
@@ -125,6 +125,38 @@ exports.addWorkerToTeam = asyncHandler(async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: team,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @desc      remove worker from team
+// @route     PUT /api/v1/teams/removeTeamMember
+// @access    Private
+exports.removeTeamMember = asyncHandler(async (req, res, next) => {
+  try {
+    let team = await Team.findById(req.user.teamId);
+
+    if (!team) {
+      return next(new ErrorResponse(`No Team with id ${req.user.teamId}`, 404));
+    }
+
+    const { memberId } = req.body;
+
+    team.members = team.members.filter(
+      (member) => member._id.toString() !== memberId
+    );
+
+    await team.validate();
+
+    updatedTeam = await team.save();
+
+    console.log(updatedTeam);
+
+    res.status(200).json({
+      success: true,
+      data: updatedTeam,
     });
   } catch (error) {
     next(error);
