@@ -28,11 +28,9 @@ router
     getTeams
   )
   .post(protect(Admin), authorize("admin", "editor"), createTeam)
-  .put(protect(Worker), updateTeam)
-  .delete(protect(Worker), deleteTeam);
 
-router.put("/addMemberToTeam", protect(Worker), addWorkerToTeam);
-router.put("/removeTeamMember", protect(Worker), removeTeamMember);
+router.post("/addMember", protect(Worker), addWorkerToTeam);
+router.delete("/deleteMember", protect(Worker), removeTeamMember);
 
 router
   .route("/:id")

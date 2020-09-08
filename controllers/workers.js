@@ -74,21 +74,3 @@ exports.createWorker = asyncHandler(async (req, res, next) => {
     data: worker,
   });
 });
-
-// @desc      delete a worker by id
-// @route     DELETE /api/v1/workers/
-// @access    Private
-exports.deleteWorker = asyncHandler(async (req, res, next) => {
-  let worker = await Worker.findById(req.user._id);
-
-  if (!worker) {
-    return next(new ErrorResponse(`No Worker with id ${req.user._id}`, 404));
-  }
-
-  // delete
-  await worker.deleteOne();
-  res.status(200).json({
-    success: true,
-    data: {},
-  });
-});

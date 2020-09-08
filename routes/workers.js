@@ -4,7 +4,6 @@ const {
   getWorkers,
   getWorker,
   updateWorker,
-  deleteWorker,
   createWorker,
 } = require("../controllers/workers");
 const Worker = require("../models/Worker");
@@ -19,7 +18,6 @@ router
   .get(protect(Admin), authorize("admin", "editor"), getWorkers)
   .put(protect(Worker), updateWorker)
   .post(protect(Admin), authorize("admin", "editor"), createWorker)
-  .delete(protect(Worker), deleteWorker);
 
 router
   .route("/:id")

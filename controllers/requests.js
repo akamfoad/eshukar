@@ -145,7 +145,7 @@ exports.doneRequest = asyncHandler(async (req, res, next) => {
   if(!req.body.amount){
     return next(
       new ErrorResponse(
-        'please provide amount of mony as "amount"',
+        'please provide amount of money',
         400
       )
     );

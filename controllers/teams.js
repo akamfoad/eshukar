@@ -27,11 +27,10 @@ exports.getTeam = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      update a team by id
-// @route     PUT /api/v1/teams/      -  for workers
 // @route     PUT /api/v1/teams/:id   -  for admins
 // @access    Private
 exports.updateTeam = asyncHandler(async (req, res, next) => {
-  const teamId = req.params.id || req.user.teamId;
+  const teamId = req.params.id ;
   try {
     let team = await Team.findById(teamId);
 
@@ -164,11 +163,10 @@ exports.removeTeamMember = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      delete a team by id
-// @route     DELETE /api/v1/teams/      -  for workers
 // @route     DELETE /api/v1/teams/:id   -  for admins
 // @access    Private
 exports.deleteTeam = asyncHandler(async (req, res, next) => {
-  const teamId = req.user.teamId || req.params.id;
+  const teamId = req.params.id;
   let team = await Team.findById(teamId);
 
   if (!team) {
