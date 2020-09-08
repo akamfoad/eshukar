@@ -24,13 +24,12 @@ router
   .get(getRequest)
   .put(protect(Admin), authorize("admin"), assignTeamToRequest)
   .delete(protect(Admin), authorize("admin"), deleteRequest);
-router.post("/:id/done", protect(Worker), authorize("leader"), doneRequest);
+router.post("/:id/done", protect(Worker), doneRequest);
 router.post("/:id/cancel", protect(Customer), cancelRequest);
 router.post("/:id/customer-rating", protect(Customer), rating(Customer));
 router.post(
   "/:id/worker-rating",
   protect(Worker),
-  authorize("leader"),
   rating(Worker)
 );
 

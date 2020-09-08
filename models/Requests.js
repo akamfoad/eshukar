@@ -12,6 +12,9 @@ const Request = new mongoose.Schema(
       enum: ["PENDING", "TEAM_ASSIGNED", "DONE", "CANCELED"],
       default: "PENDING",
     },
+    amount: {
+      type: mongoose.Schema.Types.Decimal128,
+    },
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",

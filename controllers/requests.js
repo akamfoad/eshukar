@@ -142,9 +142,19 @@ exports.doneRequest = asyncHandler(async (req, res, next) => {
     );
   }
 
+  if(!req.body.amount){
+    return next(
+      new ErrorResponse(
+        'please provide amount of mony as "amount"',
+        400
+      )
+    );
+  }
+
   // 2. done the request status
   //  a. assign done to requests status
   request.status = "DONE";
+  request.amount = req.body.amount;
   let customerRating = new Rating();
   const [
     customerRatingToken,
