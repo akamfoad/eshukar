@@ -9,6 +9,7 @@ const {
   updateService,
   deleteService,
   createService,
+  getTopServices,
 } = require("../controllers/services");
 router
   .route("/")
@@ -17,6 +18,9 @@ router
     getServices
   )
   .post(protect(Admin), authorize("admin", "editor"), createService);
+  
+router.get("/topServices", getTopServices);
+
 router
   .route("/:id")
   .get(getService)
