@@ -81,7 +81,7 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
 exports.getAnyNewRequest = asyncHandler(async (req, res, next) => {
   const request = await Request.findOne({
     teamId: req.user.teamId,
-    status: "TEAM_ASSIGNED"
+    status: "TEAM_ASSIGNED",
   });
 
   if (!request) {
@@ -91,6 +91,28 @@ exports.getAnyNewRequest = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: request,
+  });
+});
+
+// @desc      Get (customer) unrated done requests if any
+// @route     GET /api/v1/anyUnratedRequest
+// @access    Private
+exports.getAnyUnratedRequest = asyncHandler(async (req, res, next) => {
+  const requests = await Request.find({
+    customerId: req.user._id,
+  })
+    .select("-teamRating")
+    .populate("customerId teamId serviceId customerRating");
+
+  requests = requests.filter((doc) => doc.customerRating.token !== undefined);
+
+  if (requests.length < 1) {
+    return next(new ErrorResponse("There are no Unrated Request found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: requests,
   });
 });
 
@@ -161,13 +183,8 @@ exports.doneRequest = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if(!req.body.amount){
-    return next(
-      new ErrorResponse(
-        'please provide amount of money',
-        400
-      )
-    );
+  if (!req.body.amount) {
+    return next(new ErrorResponse("please provide amount of money", 400));
   }
 
   // 2. done the request status
@@ -222,8 +239,7 @@ exports.cancelRequest = asyncHandler(async (req, res, next) => {
     );
   }
 
-
-  if(request.status !== "PENDING"){
+  if (request.status !== "PENDING") {
     return next(
       new ErrorResponse("For now, only Pending requests can be canceled", 400)
     );

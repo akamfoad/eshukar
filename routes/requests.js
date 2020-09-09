@@ -15,12 +15,14 @@ const {
   cancelRequest,
   rating,
   getAnyNewRequest,
+  getAnyUnratedRequest,
 } = require("../controllers/requests");
 router
   .route("/")
   .get(advancedResults(Request), getRequests)
   .post(protect(Customer), createRequest);
 router.get("/anyNewRequest", protect(Worker), getAnyNewRequest);
+router.get("/anyUnratedRequest", protect(Customer), getAnyUnratedRequest);
 router
   .route("/:id")
   .get(getRequest)
