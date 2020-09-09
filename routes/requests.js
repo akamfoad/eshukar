@@ -19,13 +19,13 @@ const {
 } = require("../controllers/requests");
 router
   .route("/")
-  .get(advancedResults(Request), getRequests)
+  .get(protect(Admin), advancedResults(Request), getRequests)
   .post(protect(Customer), createRequest);
 router.get("/anyNewRequest", protect(Worker), getAnyNewRequest);
 router.get("/anyUnratedRequest", protect(Customer), getAnyUnratedRequest);
 router
   .route("/:id")
-  .get(getRequest)
+  .get(protect(Admin), getRequest)
   .put(protect(Admin), authorize("admin"), assignTeamToRequest)
   .delete(protect(Admin), authorize("admin"), deleteRequest);
 router.post("/:id/done", protect(Worker), doneRequest);

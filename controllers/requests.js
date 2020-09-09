@@ -59,6 +59,51 @@ exports.getRequests = asyncHandler(async (req, res, next) => {
   }
 });
 
+// @desc      Get all requests of the current worker
+// @route     GET /api/v1/workers/requests/
+// @access    Private
+exports.getWorkerRequests = asyncHandler(async (req, res, next) => {
+  const worker = await Worker.findById(req.user._id);
+  if (!worker) {
+    return next(new ErrorResponse(`No worker with id=${req.user._id}`, 404));
+  }
+  const requests = await Request.find({ teamId: worker.teamId });
+  if (!requests) {
+    return next(
+      new ErrorResponse(
+        `No requests found for the team of worker ${worker._id}`,
+        404
+      )
+    );
+  }
+  res.status(200).json({
+    success: true,
+    count: requests.length,
+    data: requests,
+  });
+});
+
+// @desc      Get all requests of the current customer
+// @route     GET /api/v1/customers/requests/
+// @access    Private
+exports.getCustomerRequests = asyncHandler(async (req, res, next) => {
+  const customer = await Customer.findById(req.user._id);
+  if (!customer) {
+    return next(new ErrorResponse(`No customer with id=${req.user._id}`, 404));
+  }
+  const requests = await Request.find({ customerId: customer._id });
+  if (!requests) {
+    return next(
+      new ErrorResponse(`No requests found for customer ${customer._id}`, 404)
+    );
+  }
+  res.status(200).json({
+    success: true,
+    count: requests.length,
+    data: requests,
+  });
+});
+
 // @desc      Get a request by id
 // @route     GET /api/v1/requests/:id
 // @access    Private

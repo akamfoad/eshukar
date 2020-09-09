@@ -7,6 +7,7 @@ const {
   deleteCustomer,
   createCustomer,
 } = require("../controllers/customers");
+const { getCustomerRequests, getRequest } = require("../controllers/requests");
 const Admin = require("../models/Adminstrators");
 const { protect, authorize } = require("../middlewares/auth");
 const Customer = require("../models/Customer");
@@ -21,6 +22,9 @@ router
   .put(protect(Customer), updateCustomer)
   .delete(protect(Customer), deleteCustomer)
   .post(protect(Customer), createCustomer);
+
+router.get("/requests", protect(Customer), getCustomerRequests);
+router.get("/requests/:id", protect(Customer), getRequest);
 router
   .route("/:id")
   .get(protect(Admin), authorize("admin", "editor"), getCustomer);
