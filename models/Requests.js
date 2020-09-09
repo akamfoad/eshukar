@@ -13,7 +13,7 @@ const Request = new mongoose.Schema(
       default: "PENDING",
     },
     amount: {
-      type: mongoose.Schema.Types.Decimal128,
+      type: Number,
     },
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -75,6 +75,25 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc      Get assigned new request if any
+// @route     GET /api/v1/anyNewRequest
+// @access    Private
+exports.getAnyNewRequest = asyncHandler(async (req, res, next) => {
+  const request = await Request.findOne({
+    teamId: req.user.teamId,
+    status: "TEAM_ASSIGNED"
+  });
+
+  if (!request) {
+    return next(new ErrorResponse("No new Request found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: request,
+  });
+});
+
 // @desc      update a request by id
 // @route     PUT /api/v1/requests/:id
 // @access    Private
@@ -203,18 +222,15 @@ exports.cancelRequest = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const isRequestTeamAssigned = request.status === "TEAM_ASSIGNED";
 
-  // 2. cancel the request status
-  //  a. assign CANCELED to request status
-  request.status = "CANCELED";
+  if(request.status !== "PENDING"){
+    return next(
+      new ErrorResponse("For now, only Pending requests can be canceled", 400)
+    );
+  }
 
   //  b. save rating request
   request = await request.save();
-
-  if (isRequestTeamAssigned) {
-    //  TODO c. send notification to assigned team
-  }
 
   res.status(200).json({
     success: true,
