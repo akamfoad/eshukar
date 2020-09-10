@@ -19,7 +19,7 @@ router
   )
   .post(protect(Admin), authorize("admin", "editor"), createService);
 
-router.get("/topServices", getTopServices);
+router.get("/topServices", protect(Admin), getTopServices);
 
 router
   .route("/:id")

@@ -30,7 +30,7 @@ router
   )
   .post(protect(Admin), authorize("admin", "editor"), createTeam);
 
-router.get("/topTeams", getTopTeams);
+router.get("/topTeams", protect(Admin), getTopTeams);
 router.post("/addMember", protect(Worker), addWorkerToTeam);
 router.delete("/deleteMember", protect(Worker), removeTeamMember);
 
