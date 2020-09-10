@@ -208,7 +208,6 @@ async function getServiceByMoney(res, next) {
         },
       },
     ]);
-    console.log(services)
     res.status(200).json({
       success: true,
       data: services,

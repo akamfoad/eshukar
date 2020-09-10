@@ -11,6 +11,7 @@ const {
   createTeam,
   addWorkerToTeam,
   removeTeamMember,
+  getTopTeams,
 } = require("../controllers/teams");
 const Admin = require("../models/Adminstrators");
 const { protect, authorize } = require("../middlewares/auth");
@@ -27,8 +28,9 @@ router
     advancedResults(Team, "members"),
     getTeams
   )
-  .post(protect(Admin), authorize("admin", "editor"), createTeam)
+  .post(protect(Admin), authorize("admin", "editor"), createTeam);
 
+router.get("/topTeams", getTopTeams);
 router.post("/addMember", protect(Worker), addWorkerToTeam);
 router.delete("/deleteMember", protect(Worker), removeTeamMember);
 

@@ -30,7 +30,7 @@ exports.getTeam = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/teams/:id   -  for admins
 // @access    Private
 exports.updateTeam = asyncHandler(async (req, res, next) => {
-  const teamId = req.params.id ;
+  const teamId = req.params.id;
   try {
     let team = await Team.findById(teamId);
 
@@ -179,4 +179,55 @@ exports.deleteTeam = asyncHandler(async (req, res, next) => {
     success: true,
     data: {},
   });
+});
+
+// @desc      Get top teams by amount they earned
+// @route     GET /api/v1/teams/topTeams
+// @access    Public
+exports.getTopTeams = asyncHandler(async (req, res, next) => {
+  try {
+    const teams = await Team.aggregate([
+      {
+        $lookup: {
+          from: "requests",
+          localField: "_id",
+          foreignField: "teamId",
+          as: "requests",
+        },
+      },
+      {
+        $unwind: {
+          path: "$requests",
+        },
+      },
+      {
+        $match: {
+          "requests.status": "DONE",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          name: {
+            $first: "$name",
+          },
+          sum: {
+            $sum: "$requests.amount",
+          },
+        },
+      },
+      {
+        $sort: {
+          sum: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: teams,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
