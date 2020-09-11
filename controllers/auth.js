@@ -35,8 +35,13 @@ exports.login = (model) => {
 
       const token = user.getSignedJwtToken();
 
+      // delete password from user object
+      user = user.toJSON();
+      delete user.password;
+
       res.status(200).json({
         success: true,
+        user,
         token,
       });
     } else {

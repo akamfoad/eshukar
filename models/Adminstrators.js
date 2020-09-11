@@ -22,6 +22,7 @@ const Adminstrator = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "password required"],
+      select: false,
     },
     role: {
       type: String,
