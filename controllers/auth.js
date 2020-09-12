@@ -150,3 +150,20 @@ exports.signUp = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+exports.me = (model) =>
+  asyncHandler(async (req, res, next) => {
+    try {
+      const query = model.findById(req.user._id);
+      if (model.modelName === "Worker") {
+        query.populate("teamId");
+      }
+      const user = await query;
+      res.status(200).json({
+        success: true,
+        user: user,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });

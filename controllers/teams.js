@@ -1,6 +1,7 @@
 const asyncHandler = require("../middlewares/async");
 const Team = require("../models/Teams");
 const Worker = require("../models/Worker");
+const Service = require("../models/Services");
 const ErrorResponse = require("../utils/ErrorResponse");
 
 // @desc      Get all teams
@@ -219,6 +220,73 @@ exports.getTopTeams = asyncHandler(async (req, res, next) => {
       {
         $sort: {
           sum: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: teams,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// @desc      Get available teams for a service
+// @route     GET /api/v1/teams/availableTeams
+// @access    Public
+exports.getAvailableTeams = asyncHandler(async (req, res, next) => {
+  const { serviceId } = req.body;
+  try {
+    if (!serviceId) {
+      return next(new ErrorResponse("Please provide serviceId", 400));
+    }
+
+    const service = await Service.findById(serviceId);
+
+    if (!service) {
+      return next(
+        new ErrorResponse(`No service found with id ${serviceId}`, 404)
+      );
+    }
+
+    const teams = await Team.aggregate([
+      {
+        $match: {
+          serviceId: service._id,
+        },
+      },
+      {
+        $lookup: {
+          from: "requests",
+          localField: "_id",
+          foreignField: "teamId",
+          as: "requests",
+        },
+      },
+      {
+        $unwind: {
+          path: "$requests",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          requests: {
+            $ne: "ASSIGNED_TEAM",
+          },
+        },
+      },
+      {
+        $unset: "requests",
+      },
+      {
+        $group: {
+          _id: "$_id",
+          name: {
+            $first: "$name",
+          },
         },
       },
     ]);
