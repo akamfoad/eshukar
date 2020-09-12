@@ -96,14 +96,14 @@ exports.deleteService = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/services/topServices?by=requestNo
 // @access    Public
 exports.getTopServices = asyncHandler(async (req, res, next) => {
-  if (req.body.by === "RequestNo") {
+  if (req.query.by === "RequestNo") {
     await getServiceByRequestNo(res, next);
-  } else if (req.body.by === "Money") {
+  } else if (req.query.by === "Money") {
     await getServiceByMoney(res, next);
   } else {
     return next(
       new ErrorResponse(
-        "please provide correct value for (by) property in body!",
+        "please provide correct value for (by) property in query!",
         400
       )
     );
