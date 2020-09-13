@@ -26,7 +26,7 @@ router.get("/anyUnratedRequest", protect(Customer), getAnyUnratedRequest);
 router
   .route("/:id")
   .get(protect(Admin), getRequest)
-  .put(protect(Admin), authorize("admin"), assignTeamToRequest)
+  .put(protect(Admin), authorize("admin", "editor"), assignTeamToRequest)
   .delete(protect(Admin), authorize("admin"), deleteRequest);
 router.post("/:id/done", protect(Worker), doneRequest);
 router.post("/:id/cancel", protect(Customer), cancelRequest);
